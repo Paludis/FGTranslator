@@ -53,7 +53,7 @@ NSString *const FG_TRANSLATOR_AZURE_TOKEN_EXPIRY = @"FG_TRANSLATOR_AZURE_TOKEN_E
     [queryString appendFormat:@"&q=%@", [NSString urlEncodedStringFromString:message]];
     
     NSURL *requestURL = [NSURL URLWithString:queryString relativeToURL:base];
-    NSURLRequest *request = [NSURLRequest requestWithURL:requestURL];
+    NSURLRequest *request = [self googleRequestForURL:requestURL];
     
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -104,7 +104,7 @@ NSString *const FG_TRANSLATOR_AZURE_TOKEN_EXPIRY = @"FG_TRANSLATOR_AZURE_TOKEN_E
     [queryString appendFormat:@"&q=%@", [NSString urlEncodedStringFromString:text]];
     
     NSURL *requestURL = [NSURL URLWithString:queryString relativeToURL:base];
-    NSURLRequest *request = [NSURLRequest requestWithURL:requestURL];
+    NSURLRequest *request = [self googleRequestForURL:requestURL];
     
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -149,7 +149,7 @@ NSString *const FG_TRANSLATOR_AZURE_TOKEN_EXPIRY = @"FG_TRANSLATOR_AZURE_TOKEN_E
         [queryString appendFormat:@"&quotaUser=%@", quotaUser];
     
     NSURL *requestURL = [NSURL URLWithString:queryString relativeToURL:base];
-    NSURLRequest *request = [NSURLRequest requestWithURL:requestURL];
+    NSURLRequest *request = [self googleRequestForURL:requestURL];
     
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -472,6 +472,13 @@ NSString *const FG_TRANSLATOR_AZURE_TOKEN_EXPIRY = @"FG_TRANSLATOR_AZURE_TOKEN_E
     NSDate *expiry = [defaults objectForKey:FG_TRANSLATOR_AZURE_TOKEN_EXPIRY];
     
     return [[FGAzureToken alloc] initWithToken:token expiry:expiry];
+}
+
++ (NSURLRequest*) googleRequestForURL:(NSURL*)url
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"] forHTTPHeaderField:@"X-Ios-Bundle-Identifier"];
+    return request;
 }
 
 @end
